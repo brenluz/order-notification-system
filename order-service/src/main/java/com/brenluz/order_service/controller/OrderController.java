@@ -18,6 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
 
+    @Valid
     @PostMapping
     public ResponseEntity<OrderResponse> save(@RequestBody @Valid OrderRequest order) {
         OrderResponse savedOrder = orderService.save(order);

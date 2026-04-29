@@ -42,7 +42,7 @@ public class OrderService {
         ));
     }
 
-    @Transactional
+    @Transactional()
     public List<OrderResponse> findAll() {
         return orderRepository.findAll()
                 .stream()
