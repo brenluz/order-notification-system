@@ -128,13 +128,3 @@ order-notification-system/
 |---|---|---|
 | `POST` | `/orders` | Create an order, triggers notification event |
 | `GET` | `/orders` | List all orders |
-
----
-
-## What I learned building this
-
-- How message brokers decouple services and why that matters at scale
-- The difference between synchronous REST calls between services vs async event publishing
-- Spring AMQP internals — `RabbitTemplate`, `@RabbitListener`, converter configuration
-- Why Database-per-Service prevents tight coupling even at the data layer
-- Debugging serialization issues between services communicating over a queue
