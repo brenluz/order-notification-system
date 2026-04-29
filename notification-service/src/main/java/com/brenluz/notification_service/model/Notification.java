@@ -1,10 +1,12 @@
-package com.brenluz.order_service.model;
+package com.brenluz.notification_service.model;
+
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,26 +14,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="orders")
-public class Order implements Serializable {
+@Table(name="notifications")
+public class Notification {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(nullable=false)
+    private Long orderId;
 
     @NotNull
     @Column(nullable=false)
     private String product;
 
-    @NotNull
-    @Column(nullable=false)
-    private Integer quantity;
-
-    @NotNull
-    @Column(nullable=false)
-    private Double price;
-
     private String status;
 
+    @Column(nullable=false)
     private LocalDateTime createdAt;
 
     @PrePersist

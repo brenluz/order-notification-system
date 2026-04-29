@@ -1,6 +1,8 @@
 package com.brenluz.order_service.service;
 
 import com.brenluz.order_service.config.RabbitMQConfig;
+import com.brenluz.order_service.dto.OrderRequest;
+import com.brenluz.order_service.dto.OrderResponse;
 import com.brenluz.order_service.model.Order;
 import com.brenluz.order_service.repository.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -17,18 +19,41 @@ public class OrderService {
     private final RabbitTemplate rabbitTemplate;
 
     @Transactional
-    public Order save(Order order) {
+    public OrderResponse save(OrderRequest request) {
+        Order order = Order.builder()
+                .product(request.getProduct())
+                .quantity(request.getQuantity())
+                .price(request.getPrice())
+                .build();
+
         Order savedOrder = orderRepository.save(order);
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.exchange,
                 RabbitMQConfig.routingKey,
                 savedOrder
         );
-        return savedOrder;
+        return (new  OrderResponse(
+                savedOrder.getId(),
+                savedOrder.getProduct(),
+                savedOrder.getStatus(),
+                savedOrder.getQuantity(),
+                savedOrder.getPrice(),
+                savedOrder.getCreatedAt()
+        ));
     }
 
     @Transactional
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public List<OrderResponse> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(o -> new OrderResponse(
+                        o.getId(),
+                        o.getProduct(),
+                        o.getStatus(),
+                        o.getQuantity(),
+                        o.getPrice(),
+                        o.getCreatedAt()
+                ))
+                .toList();
     }
 }

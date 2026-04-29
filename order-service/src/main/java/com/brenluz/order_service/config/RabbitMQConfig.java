@@ -1,6 +1,8 @@
 package com.brenluz.order_service.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,5 +30,10 @@ public class RabbitMQConfig {
                 .bind(orderQueue)
                 .to((TopicExchange) orderExchange)
                 .with(routingKey);
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new JacksonJsonMessageConverter();
     }
 }
