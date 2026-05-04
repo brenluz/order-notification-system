@@ -33,6 +33,7 @@ public class OrderControllerTest {
         // Arrange
         OrderRequest order = new OrderRequest("product", 1, 10.0);
         OrderResponse expectedResponse = new OrderResponse();
+
         expectedResponse.setProduct("product");
         expectedResponse.setQuantity(1);
         expectedResponse.setPrice(10.0);
@@ -46,6 +47,18 @@ public class OrderControllerTest {
                 .content(objectMapper.writeValueAsString(order)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.product").value("product"));
+    }
+
+    @Test
+    void shouldReturn400WhenNoProduct() throws Exception {
+        // Arrange
+        OrderRequest order = new OrderRequest(null, 1, 10.0);
+
+        // Act + Assert
+        mockMvc.perform(post("/orders")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(order)))
+                .andExpect(status().isBadRequest());
     }
 
 }
