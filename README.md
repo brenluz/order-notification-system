@@ -60,7 +60,7 @@ This project intentionally avoids direct service-to-service calls (REST or gRPC 
 
 ```bash
 # 1. Clone
-git clone https://github.com/your-username/order-notification-system.git
+git clone https://github.com/brenluz/order-notification-system.git
 cd order-notification-system
 
 # 2. Start infrastructure
