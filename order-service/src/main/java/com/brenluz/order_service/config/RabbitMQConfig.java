@@ -16,7 +16,10 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue orderQueue() {
-        return new Queue(queue);
+        return QueueBuilder.durable(queue)
+                .withArgument("x-dead-letter-exchange", "order.dlx")
+                .withArgument("x-dead-letter-routing-key", "order.dlx.routingkey")
+                .build();
     }
 
     @Bean
