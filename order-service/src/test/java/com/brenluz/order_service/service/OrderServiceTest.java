@@ -10,10 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 // Tests are done using AAA pattern: Arrange, Act, Assert
 
@@ -49,4 +52,42 @@ class OrderServiceTest {
         assertEquals("PENDING", response.getStatus());
     }
 
+    @Test
+    void shouldPublishMessageToRabbitMQ(){
+        // Arrange
+        Order savedOrder = Order.builder()
+                .product("product")
+                .quantity(1)
+                .price(10.0)
+                .status("PENDING")
+                .build();
+        when(orderRepository.save(any())).thenReturn(savedOrder);
+
+        // Act
+        orderService.save(new OrderRequest("product", 1, 10.0));
+
+        // Assert - verify convertAndSend was called exactly once
+        verify(rabbitTemplate, times(1)).convertAndSend(
+                any(String.class),
+                any(String.class),
+                any(Object.class)
+        );
+    }
+
+    @Test
+    void shouldReturnAllOrders(){
+        // Arrange
+        Order order1 = Order.builder().id(1L).product("product1").quantity(1).price(10.0).status("PENDING").build();
+        Order order2 = Order.builder().id(2L).product("product2").quantity(2).price(20.0).status("PENDING").build();
+        when(orderRepository.findAll()).thenReturn(java.util.List.of(order1, order2));
+
+        // Act
+        List<OrderResponse> response = orderService.findAll();
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(2, response.size());
+        assertEquals("product1", response.get(0).getProduct());
+        assertEquals("product2", response.get(1).getProduct());
+    }
 }
