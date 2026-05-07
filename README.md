@@ -74,6 +74,8 @@ docker exec -it <postgres-container> psql -U myuser -d postgres -c "CREATE DATAB
 # NotificationServiceApplication → localhost:8081
 ```
 
+Copy .env.example to .env and fill in your own values before running.
+
 **Create an order:**
 ```bash
 curl -X POST http://localhost:8080/orders \
